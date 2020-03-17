@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+"-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.imagemapper">
+
+	<select id="selectPage" resultType="Integer"
+		parameterType="Integer">
+	select rn from
+	(
+		select a.* rownum rn from
+		(
+			select art_id from art_board
+			order by art_id desc
+		)a
+	)where art_id = #{art_id}
+	</select>
+
+	<select id="selectArtBoardById" resultType="model.ArtBoard"
+		parameterType="Integer">
+	select art_id, art_date, user_id, image, content, title
+		 from art_board
+		 where art_id =#{art_id}
+	</select>
+
+<!-- /////////////////////////////////////////////////////////////////////// -->
+	<select id="selectArtBoardCond" resultType="model.ArtBoard">
+		select art_id, art_date, user_id, image, content, title
+		 from art_board
+		 order by art_id desc
+	</select>
+
+	<select id="selectImageCount" resultType="Integer">
+	select count(*) from art_board
+	</select>
+
+	<select id="selectMaxArtId" resultType="Integer">
+	select max(art_id) as mart_id from art_board
+	</select>
+
+	<select id="getMaxArtId" resultType="Integer">
+	select max(art_id) as m_rid from art_board
+	</select>
+
+	<select id="getArtContent" resultType="model.ArtBoard"
+		parameterType="Integer">
+	select * from art_board where art_id=#{art_id}
+	</select>
+
+	<insert id="insertArtBoard" parameterType="model.ArtBoard">
+	insert into art_board(
+		art_id, art_date, user_id, image, content, title
+	)values(
+		#{art_id}, #{art_date}, #{user_id}, #{image},
+		#{content}, #{title}
+	)
+	</insert>
+
+	<update id="updateArtBoard" parameterType="model.ArtBoard">
+	update art_board set
+			image=#{image}, content=#{content}, title=#{title}
+	where art_id=#{art_id}
+	</update>
+
+	<delete id="deleteArtBoard" parameterType="Integer">
+	delete from art_board where art_id = #{art_id}
+	</delete>
+
+	<select id="getArt" resultType="model.ArtBoard"
+		parameterType="Integer">
+	select art_id, art_date, user_id,
+			image, content, title
+	from art_board
+	where art_id = #{art_id}
+	</select>
+
+	<select id="getArtList" resultType="model.ArtBoard">
+	select art_id, art_date, user_id, image, content, title
+	from art_board
+	order by art_id desc
+	</select>
+
+</mapper>
