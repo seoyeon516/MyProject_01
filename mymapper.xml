@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+"-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mapper.mymapper">
+
+<!-- ///////////////////////////////////////////////////////////////////// -->
+	<select id="selectQnaCond" resultType="model.QnA"
+		parameterType="model.Condition">
+		select qna_id, group_id, order_id, parent_id, qna_date, user_id, content, status
+		from qna
+		order by group_id desc, order_id asc
+<!-- 	select
+	qna_id, group_id, order_id, parent_id, qna_date, user_id, content, status
+	from(
+		select a.*, rownum rn from
+		(
+			select * from qna
+			order by group_id desc, order_id asc
+		) a
+	)where rn between #{startRow} and #{endRow} -->
+	</select>
+
+	<select id="selectQnACount" resultType="Integer">
+	select count(*) from qna
+	</select>
+
+	<select id="selectQnaPage" parameterType="Integer" resultType="Integer">
+	select rn from
+	(
+		select a.* rownum rn from
+		(
+			select qna_id from qna
+			order by qna_id desc
+		) a
+	)where qna_id = #{qna_id}
+	</select>
+
+	<select id="selectQnA" resultType="model.QnA">
+	select * from qna order by qna_id desc
+	</select>
+
+	<update id="updateOrderId" parameterType="model.QnA">
+	update qna set order_id = order_id + 1
+	where group_id = #{group_id} and order_id >= #{order_id}
+	</update>
+
+	<select id="selectQnAByNo" resultType="model.QnA" parameterType="Integer">
+	select qna_id, group_id, order_id, parent_id,
+	qna_date, user_id, content, status
+	 from qna where qna_id = #{qna_id}
+	</select>
+
+	<select id="selectIdPwd" resultType="model.UserInfo" parameterType="String">
+	select user_id, password from userinfo where user_id=#{user_id}
+	</select>
+
+	<insert id="insertPinfo" parameterType="model.UserInfo">
+	insert into userinfo(name, user_id, password, sex, email, job, movie)
+	values( #{name}, #{user_id}, #{password}, #{sex}, #{email}, #{job}, #{movie})
+	</insert>
+
+	<select id="selectId" resultType="String" parameterType="String">
+		select user_id from userinfo where user_id = #{user_id}
+	</select>
+
+	<select id="selectMaxGroupId" resultType="Integer">
+	select max(group_id) as num from qna
+	</select>
+
+	<select id="selectMaxQnaId" resultType="Integer">
+	select max(qna_id) as max_id from qna
+	</select>
+
+	<update id="updateGroupIdReply"
+		parameterType="model.QnA">
+	update qna set order_id = order_id + 1, status=#{status}
+	where group_id =#{group_id}
+	</update>
+
+	<select id="getQnaContent" resultType="model.QnA"
+		parameterType="Integer">
+	select * from qna where qna_id =#{qna_id}
+	</select>
+
+	<insert id="entryQna" parameterType="model.QnA">
+	insert into qna values(
+		#{qna_id}, #{group_id}, #{order_id}, #{parent_id},
+		#{qna_date}, #{user_id},#{content}, #{status})
+	</insert>
+
+	<update id="updateQna" parameterType="Integer">
+	update qna set status=#{status}, content =#{content}
+	where qna_id =#{qna_id}
+	</update>
+
+	<delete id="deleteQna" parameterType="Integer">
+	delete from qna where qna_id = #{qna_id}
+	</delete>
+
+	<select id="getQna" resultType="model.QnA"
+		parameterType="Integer">
+	select qna_id, user_id, qna_date, content, status
+	from qna
+	where qna_id = #{qna_id}
+	</select>
+
+	<select id="getQnaList" resultType="model.QnA">
+	select qna_id, user_id, qna_date, status
+	from qna
+	order by group_id desc, order_id asc
+	</select>
+
+</mapper>
